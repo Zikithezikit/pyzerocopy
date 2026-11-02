@@ -29,7 +29,7 @@ Homepage = "https://github.com/Zikithezikit/pyzerocopy"
 
 [project.optional-dependencies]
 dev = ["pytest", "pytest-cov", "ruff", "mypy", "build", "twine"]
-bench = ["structed", "numpy"]
+bench = ["structed", "numpy", "matplotlib"]
 
 [tool.setuptools.package-data]
 pyzerocopy = ["py.typed"]

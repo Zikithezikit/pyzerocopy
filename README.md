@@ -104,10 +104,19 @@ All library errors inherit from `PyZeroCopyError`.
 
 ## Performance
 
-Run `make bench` to reproduce. On one machine (Python 3.14, 300k records, one run), reading `view[i].x` took about
-480 ns and a write about 520 ns. Raw `struct.unpack_from` with hand-computed offsets took about 140 ns, so the proxy
-costs roughly 3x in return for named fields. Creating a view takes microseconds regardless of buffer size.
-Treat these as ballpark figures and measure on your own hardware.
+![Benchmark results](docs/benchmark.png)
+
+Run `make bench` to reproduce this chart on your machine (it rewrites `docs/benchmark.png`; `N=` sets the record
+count). The chart above is one run on Python 3.14 with 500k records.
+
+- Reading or writing a field through a record costs about 500 ns, roughly 3 to 4x raw `struct` calls with
+  hand-computed offsets. That is the price of named fields.
+- Iterating is faster than indexing (about 340 ns per record) because it skips the index checks.
+- Against structed, which copies and decodes the whole record on each access, pyzerocopy is about 5x faster per
+  field read.
+- Creating a view or a slice takes microseconds regardless of buffer size.
+
+Treat the figures as ballpark and measure on your own hardware.
 
 ## Limits
 

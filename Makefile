@@ -31,9 +31,9 @@ typecheck:  ## Run mypy (strict)
 
 check: lint typecheck test  ## Everything CI runs
 
-bench:  ## Run benchmarks (N=records, default 1000000)
-	$(BIN)/pip install -q numpy structed
-	$(BIN)/python benchmarks/benchmark_access.py $(N)
+bench:  ## Run benchmarks and write docs/benchmark.png (N=records, default 1000000)
+	$(BIN)/pip install -q numpy structed matplotlib
+	$(BIN)/python benchmarks/benchmark_access.py $(N) --plot docs/benchmark.png
 
 example:  ## Run the basic usage example
 	$(BIN)/python examples/basic_usage.py

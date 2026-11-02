@@ -1,12 +1,22 @@
-"""pyzerocopy vs structed vs raw struct. Run: python benchmarks/benchmark_access.py [N]"""
+"""pyzerocopy vs structed vs raw struct vs NumPy.
 
+Run: python benchmarks/benchmark_access.py [N] [--plot docs/benchmark.png]
+"""
+
+import argparse
+import platform
 import struct
 import sys
 import time
 
 from pyzerocopy import Endian, Struct, float32, uint32_t
 
-N = int(sys.argv[1]) if len(sys.argv) > 1 else 1_000_000
+parser = argparse.ArgumentParser()
+parser.add_argument("n", nargs="?", type=int, default=1_000_000, help="number of records")
+parser.add_argument("--plot", metavar="PNG", help="also write a bar chart (needs matplotlib)")
+args = parser.parse_args()
+N = args.n
+RESULTS: list[tuple[str, float]] = []  # (label, ns per op)
 
 
 class Particle(Struct, endian=Endian.LITTLE):
@@ -22,6 +32,31 @@ def timeit(label, fn, ops):
     fn()
     dt = time.perf_counter() - t
     print(f"{label:<34}{ops / dt / 1e6:8.2f} Mops/s {dt / ops * 1e9:9.0f} ns/op")
+    RESULTS.append((label, dt / ops * 1e9))
+
+
+def plot(path):
+    import matplotlib
+
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    rows = sorted(RESULTS, key=lambda r: r[1], reverse=True)
+    fig, ax = plt.subplots(figsize=(9, 0.5 * len(rows) + 1.6), facecolor="white")
+    colors = ["#2a6fdb" if label.startswith("pyzerocopy") else "#9aa5b1" for label, _ in rows]
+    bars = ax.barh([label for label, _ in rows], [ns for _, ns in rows], color=colors)
+    ax.bar_label(bars, labels=[f"{ns:,.0f} ns" for _, ns in rows], padding=4, fontsize=9)
+    ax.set_xlabel("time per operation (ns), lower is better")
+    ax.set_title(f"pyzerocopy benchmarks: {N:,} records, {size_note()}", fontsize=10, loc="left")
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.margins(x=0.15)
+    fig.tight_layout()
+    fig.savefig(path, dpi=150)
+    print(f"wrote {path}")
+
+
+def size_note():
+    return f"Python {platform.python_version()}, {platform.machine()}"
 
 
 def main():
@@ -104,3 +139,5 @@ def main():
 
 
 main()
+if args.plot:
+    plot(args.plot)
