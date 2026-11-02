@@ -19,8 +19,8 @@ class View:
     def __init__(self, elem: Any, mv: memoryview) -> None:
         self._elem = elem
         self._mv = mv
-        self._size = elem.size
-        self._len = len(mv) // elem.size
+        self._size: int = elem.size
+        self._len: int = len(mv) // self._size
 
     @property
     def memory(self) -> memoryview:
@@ -31,12 +31,12 @@ class View:
         return self._len
 
     def _offset(self, i: Any) -> int:
-        i = operator.index(i)
+        i = int(operator.index(i))
         if i < 0:
             i += self._len
         if not 0 <= i < self._len:
             raise IndexError("index out of range")
-        return i * self._size
+        return int(i * self._size)
 
     def __getitem__(self, i: Any) -> Any:
         if isinstance(i, slice):

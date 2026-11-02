@@ -13,7 +13,7 @@ class _Nested:
 
     __slots__ = ("cls", "size", "align", "name")
 
-    def __init__(self, cls: type, size: int, align: int) -> None:
+    def __init__(self, cls: Any, size: int, align: int) -> None:
         self.cls, self.size, self.align, self.name = cls, size, align, cls.__name__
 
     def get(self, mv: memoryview, off: int) -> Any:
@@ -22,7 +22,7 @@ class _Nested:
     def set(self, mv: memoryview, off: int, value: Any) -> None:
         if type(value) is not self.cls:
             raise PackingError(f"expected a {self.name} record, got {type(value).__name__}")
-        src = value._mv[value._off : value._off + self.size]
+        src = value.memory
         try:
             mv[off : off + self.size] = src  # in-buffer memcpy, overlap-safe
         except TypeError as exc:
@@ -82,11 +82,15 @@ def _resolve(ann: Any, endian: str, where: str) -> Any:
 
 
 class StructMeta(type):
-    def __new__(mcs, name, bases, ns, endian=Endian.LITTLE, packed=True):
+    def __new__(
+        mcs, name: str, bases: tuple[type, ...], ns: dict[str, Any], endian: Endian = Endian.LITTLE, packed: bool = True
+    ) -> StructMeta:
         ns.setdefault("__slots__", ())  # records must not carry a per-instance __dict__
         return super().__new__(mcs, name, bases, ns)
 
-    def __init__(cls, name, bases, ns, endian=Endian.LITTLE, packed=True):
+    def __init__(
+        cls, name: str, bases: tuple[type, ...], ns: dict[str, Any], endian: Endian = Endian.LITTLE, packed: bool = True
+    ) -> None:
         super().__init__(name, bases, ns)
         if not any(isinstance(b, StructMeta) for b in bases):
             return  # the Struct base class itself
@@ -120,6 +124,8 @@ class Struct(metaclass=StructMeta):
     """
 
     __slots__ = ("_mv", "_off")
+    _elem: _Nested  # set per subclass by StructMeta
+    _fields: tuple[str, ...]
 
     def __init__(self, mv: memoryview, off: int = 0) -> None:
         self._mv, self._off = mv, off
