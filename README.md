@@ -20,7 +20,7 @@ data = bytearray(Particle.sizeof() * 1000)
 particles = Particle.view(data)  # no copy
 particles[0].x = 10.5  # writes into `data`
 subset = particles[10:100]  # still the same memory
-blob = subset.to_bytes()        # copies the bytes
+blob = subset.to_bytes()  # copies the bytes
 ```
 
 ## Install
