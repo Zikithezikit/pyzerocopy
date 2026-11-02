@@ -19,4 +19,4 @@ subset[0].id = 42
 
 assert particles[10].id == 42 and data[:4] == bytes.fromhex("00002841")
 print(particle, len(subset), particles.memory.obj is data)
-binary = subset.to_bytes()  # the only way to copy, and it's explicit
+binary = subset.to_bytes()  # copies the bytes
