@@ -31,5 +31,6 @@ make check
 ## Releasing (maintainers)
 
 1. Move "Unreleased" entries in `CHANGELOG.md` under the new version and bump `version` in `pyproject.toml`.
-2. Commit, then tag: `git tag v0.1.0 && git push --tags`.
-3. The `Release` workflow builds and publishes to PyPI via trusted publishing (configure the project on PyPI first).
+2. Commit and push to `main`, then tag the same version: `git tag v0.1.0 && git push origin v0.1.0`.
+3. The `Release` workflow runs CI, builds the sdist and wheel, checks that the tag matches `pyproject.toml`,
+   attests the artifacts and publishes to PyPI. It needs the `PYPI_API_TOKEN` repository secret.
