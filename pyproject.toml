@@ -13,6 +13,10 @@ license-files = ["LICENSE"]
 authors = [{ name = "Yoav Haimov", email = "haimovyoav.work@gmail.com" }]
 keywords = ["zero-copy", "binary", "struct", "buffer", "memoryview"]
 classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Topic :: Software Development :: Libraries",
   "Typing :: Typed",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.10",
@@ -26,6 +30,10 @@ dependencies = []
 
 [project.urls]
 Homepage = "https://github.com/Zikithezikit/pyzerocopy"
+Documentation = "https://github.com/Zikithezikit/pyzerocopy#readme"
+Issues = "https://github.com/Zikithezikit/pyzerocopy/issues"
+Changelog = "https://github.com/Zikithezikit/pyzerocopy/blob/main/CHANGELOG.md"
+PyPI = "https://pypi.org/project/pyzerocopy/"
 
 [project.optional-dependencies]
 dev = ["pytest", "pytest-cov", "ruff", "mypy", "build", "twine"]

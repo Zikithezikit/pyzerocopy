@@ -1,5 +1,10 @@
 # pyzerocopy
 
+[![PyPI](https://img.shields.io/pypi/v/pyzerocopy)](https://pypi.org/project/pyzerocopy/)
+[![Python](https://img.shields.io/pypi/pyversions/pyzerocopy)](https://pypi.org/project/pyzerocopy/)
+[![CI](https://github.com/Zikithezikit/pyzerocopy/actions/workflows/ci.yml/badge.svg)](https://github.com/Zikithezikit/pyzerocopy/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Zero-copy structured buffers for Python.
 
 You describe a binary layout as a class. pyzerocopy then reads and writes its fields directly in memory you already
